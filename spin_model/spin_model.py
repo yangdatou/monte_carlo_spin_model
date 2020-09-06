@@ -1,12 +1,15 @@
 class SpinModel(object):
+    ''' Abstract base class for spin model that used to store the
+    parameters of the system'''
     pass
 
 class IsingModel(SpinModel):
-    def __init__(self):
-        pass
+    ''' '''
+    def __init__(self, interaction_strength=1.0):
+        self.interaction_strength = interaction_strength
 
-    def get_site(self):
-        pass
+    def get_site(self, index=0):
+        return IsingSpinSite(interaction_strength=self.interaction_strength, index=index)
 
 class XYModel(SpinModel):
     def __init__(self):
