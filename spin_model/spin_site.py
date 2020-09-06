@@ -20,8 +20,8 @@ class IsingSpinSite(SpinSite):
             self.config = config
 
     def set_random_config(self):
-        temp = randint(2)
-        self.set_config(temp)
+        tmp = randint(2)
+        self.set_config(tmp)
 
     def get_int_energy(self, other_site):
         pass
