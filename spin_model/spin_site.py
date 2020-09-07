@@ -2,7 +2,6 @@ from numpy.random import randint
 from numpy.random import random
 
 class SpinSite(object):
-    ''' '''
     pass
 
 class IsingSpinSite(SpinSite):
