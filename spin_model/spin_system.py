@@ -7,9 +7,9 @@ class SpinSystem(object):
 class OneDimensionalSpinChain(SpinSystem):
     '''Store the parameters of 1d spin chain'''
     def __init__(self, spin_model, size=10, is_pbc=True, temperature=1.0):
-        self.size = size
-        self.is_pbc = is_pbc
-        if temperature is not 0.0:
+        self.size      = size
+        self.is_pbc    = is_pbc
+        if temperature != 0.0:
             self.temperature = temperature
             self.beta = 1.0 / temperature
         else:
@@ -30,12 +30,12 @@ class OneDimensionalSpinChain(SpinSystem):
         assert isinstance(coord1, self._coord_class) 
         assert isinstance(coord2, self._coord_class)
         diff = coord1 - coord2
-        assert diff is not 0
+        assert diff != 0
         if self.is_pbc:
             tmp = (abs(diff) in [1, self.size - 1])
             return tmp
         else:
-            tmp = (abs(diff) is 1)
+            tmp = (abs(diff) == 1)
             return tmp
 
     def is_adjacent_index(self, index1, index2):
@@ -53,9 +53,9 @@ class OneDimensionalSpinChain(SpinSystem):
         site_index = site.index
 
         if self.is_pbc:
-            if site_index is 0:
+            if site_index   == 0:
                 return [self._spin_site_list[1], self._spin_site_list[self.size - 1]]
-            elif site_index is self.size - 1:
+            elif site_index == self.size - 1:
                 return [self._spin_site_list[0], self._spin_site_list[self.size - 2]]
         else:
             return [self._spin_site_list[site_index-1], self._spin_site_list[site_index+1]]
@@ -109,7 +109,7 @@ class OneDimensionalSpinChain(SpinSystem):
             site.set_random_config()
 
     def set_temperature(self, temperature):
-        if temperature is not 0.0:
+        if temperature != 0.0:
             self.temperature = temperature
             self.beta = 1.0 / temperature
         else:
