@@ -200,3 +200,6 @@ class OneDimensionalSpinChain(SpinSystem):
 
     def display_system(self):
         pass
+
+class TwoDimensionalSpinLattice(SpinSystem):
+    pass
