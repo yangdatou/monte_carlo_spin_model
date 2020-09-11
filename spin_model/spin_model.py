@@ -10,7 +10,7 @@ class IsingModel(SpinModel):
     def __init__(self, interaction_strength=1.0):
         self.interaction_strength = interaction_strength
 
-    def get_site(self, config=0, index=1):
+    def make_site(self, config=0, index=1):
         return IsingSpinSite(config=config, index=index)
 
     def get_config_int_energy(self, config1, config2, dist=1, factor=1.0):
@@ -41,7 +41,7 @@ class XYModel(SpinModel):
     def __init__(self):
         pass
 
-    def get_site(self):
+    def make_site(self):
         pass
 
 
@@ -49,5 +49,5 @@ class HubbardModel(SpinModel):
     def __init__(self):
         pass
 
-    def get_site(self):
+    def make_site(self):
         pass

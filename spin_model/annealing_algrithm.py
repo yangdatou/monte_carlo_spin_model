@@ -3,23 +3,20 @@ import numpy
 def annealing(spin_sys, temp_init=5.0, temp_final=0.1, nsteps=20,
               max_cycle=1000, tol=1e-4, do_display_config=False):
 
-    dic_thermal = {}
     temp_list = numpy.linspace(temp_init, temp_final, nsteps)
     ene_list  = []
     cv_list   = []
 
     for temp in temp_list:
-        equilibrate(spin_sys, temperature=temp, max_cycle=max_cycle, do_display_config=do_display_config)
-        e  = spin_sys.get_energy()
-        cv = spin_sys.get_cv()
+        e, cv  = equilibrate(spin_sys, temperature=temp, max_cycle=max_cycle, 
+                             tol=tol, do_display_config=do_display_config)
         ene_list.append(e)
         cv_list.append(cv)
 
-    return temp_list, ene_list
+    return temp_list, ene_list, cv_list
 
 
-def equilibrate(spin_sys, temperature=None,
-                max_cycle=10000, tol=1e-4,
+def equilibrate(spin_sys, temperature=None, max_cycle=1000, tol=1e-4,
                 do_display_config=False):
     if temperature is None:
         temperature = spin_sys.temperature
@@ -31,41 +28,41 @@ def equilibrate(spin_sys, temperature=None,
         else:
             RuntimeError("The temperature should not be zero!")
 
+    energy_list    = []
     current_energy = 0.0
     prev_energy    = 0.0
     is_converged   = False
     cycle          = 0
-    while (not is_converged) and (cycle < max_cycle):
-        self.sweep()
-        # list_M.append(np.abs(np.sum(S)/N))
-        energy = np.sum(self.get_energy()) / self.num_spins / 2
-        dic_thermal_t['energy'] += [energy]
-        cycle       += 1
-        err          = 1.0 if cycle==0 else abs(current_energy-prev_energy)/abs(current_energy)
-        is_converged = err < tol
+    while (not is_converged) or (cycle < max_cycle//2):
+        spin_sys.sweep_system()
+        prev_energy    = current_energy
+        current_energy = spin_sys.get_system_energy()
+        energy_list.append(current_energy)
+
+        if cycle == 0:
+            err = 1.0
+        else:
+            if current_energy == 0.0:
+                if prev_energy == 0.0:
+                    err = 0.0
+                else:
+                    err = abs(current_energy-prev_energy)/abs(prev_energy)
+            else:
+                err = abs(current_energy-prev_energy)/abs(current_energy)
         
-    for k in range(max_cycle):
-        self.sweep()
-        # list_M.append(np.abs(np.sum(S)/N))
-        energy = np.sum(self.get_energy()) / self.num_spins / 2
-        dic_thermal_t['energy'] += [energy]
-        #print( abs(energy-energy_temp)/abs(energy))
-        if show & (k % 1e3 == 0):
-            print('#sweeps=%i' % (k + 1))
-            print('energy=%.2f' % energy)
-            self.show()
-        if ((abs(energy - energy_temp) / abs(energy) < 1e-4)
-                & (k > 500)) or k == max_cycle - 1:
-            print(
-                '\nequilibrium state is reached at T=%.1f' %
-                self.temperature)
-            print('#sweep=%i' % k)
-            print('energy=%.2f' % energy)
-            break
-        energy_temp = energy
-    nstates = len(dic_thermal_t['energy'])
-    energy = np.average(dic_thermal_t['energy'][int(nstates / 2):])
-    self.energy = energy
-    energy2 = np.average(
-        np.power(dic_thermal_t['energy'][int(nstates / 2):], 2))
-    self.Cv = (energy2 - energy**2) * beta**2
+        cycle       += 1
+        is_converged = err < tol
+
+    if is_converged:
+        tmp_array   = numpy.array(energy_list[cycle//2:])
+        avg_energy  = numpy.average(tmp_array)
+        avg_energy2 = numpy.average(numpy.power(tmp_array,2))
+        cv          = (avg_energy2 - avg_energy**2) * beta**2
+
+        print('#T={:6.2f}, sweep={:6d}, energy={:6.2f}, cv={:6.2f}'.format(
+            temperature, cycle, avg_energy, cv
+            ))
+        return avg_energy, cv
+    else:
+        RuntimeError("MC is not converged!")
+    
