@@ -1,1 +1,1 @@
-# spin_model
+# Monte Carlo Spin Model
