@@ -186,7 +186,7 @@ class OneDimensionalSpinChain(SpinSystem):
         exp_beta_e     = exp(-self.beta*diff_energy)
         random_0_1     = random.random()
 
-        do_accept      = True if random_0_1 < exp_beta_e else False
+        do_accept      = (random_0_1 < exp_beta_e)
 
         if not do_accept:
             self.set_site_config(site, prev_config)
