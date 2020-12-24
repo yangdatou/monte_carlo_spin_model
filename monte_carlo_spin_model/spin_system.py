@@ -208,7 +208,7 @@ class OneDimensionalSpinChain(SpinSystem):
             return tmp
 
     def get_coord_neighbors(self, coord):
-        assert isinstance(index, int)
+        assert isinstance(coord, self._coord_class) 
         sys_size  = self.size
         sys_shape = self.shape
         if self.is_pbc:
