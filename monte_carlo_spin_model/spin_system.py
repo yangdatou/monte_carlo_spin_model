@@ -282,6 +282,25 @@ class TwoDimensionalSpinLattice(SpinSystem):
             tmp = (abs(diff_x) == 1) and (abs(diff_y) == 1)
             return tmp
 
+    def get_coord_neighbors(self, coord):
+        assert isinstance(coord, self._coord_class) 
+        sys_size  = self.size
+        sys_shape = self.shape
+        if self.is_pbc:
+            if coord[0] == 0:
+                return [sys_shape - 1, 1]
+            elif coord == sys_shape - 1:
+                return [sys_shape - 2, 0]
+            else:
+                return [coord - 1, coord + 1]
+        else:
+            if coord   == 0:
+                return [1]
+            elif coord == sys_shape - 1:
+                return [sys_shape - 2]
+            else:
+                return [coord - 1, coord + 1]
+
     def get_adjacent_coord_pairs(self):
         sys_size   = self.size
         sys_shape  = self.shape
