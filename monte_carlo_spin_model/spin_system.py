@@ -287,9 +287,9 @@ class TwoDimensionalSpinLattice(SpinSystem):
         sys_size  = self.size
         sys_shape = self.shape
         if self.is_pbc:
-            if coord[0] == 0:
-                return [sys_shape - 1, 1]
-            elif coord == sys_shape - 1:
+            if coord[0] == 0 and coord[1] == 0:
+                return [(1,0), (0,1), (sys_shape-1, 0), (0, sys_shape-1)]
+            elif coord[0] == sys_shape-1 and coord[1] == sys_shape-1:
                 return [sys_shape - 2, 0]
             else:
                 return [coord - 1, coord + 1]
